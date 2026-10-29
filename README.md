@@ -19,7 +19,7 @@ web based application which visualizes and analyzes social networks.
 - VS Code
 - Github
 - Python
-- Pyvis(?)
+- Pyvis(?)/Plotly
 - Streamlit(?)/Flask(?)
 - JSON
 
