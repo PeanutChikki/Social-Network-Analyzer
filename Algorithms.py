@@ -1,10 +1,12 @@
 
+
 from collections import deque
 
 
 def bfs(graph, start):
-    """Return users in breadth-first traversal order."""
-    if start not in graph.adjacency_list:
+    """Breadth-First Search"""
+
+    if start not in graph.graph:
         raise ValueError("Starting user does not exist.")
 
     visited = {start}
@@ -15,7 +17,7 @@ def bfs(graph, start):
         current = queue.popleft()
         order.append(current)
 
-        for friend in sorted(graph.adjacency_list[current]):
+        for friend in sorted(graph.graph[current]):
             if friend not in visited:
                 visited.add(friend)
                 queue.append(friend)
@@ -24,8 +26,9 @@ def bfs(graph, start):
 
 
 def dfs(graph, start):
-    """Return users in depth-first traversal order."""
-    if start not in graph.adjacency_list:
+    """Depth-First Search"""
+
+    if start not in graph.graph:
         raise ValueError("Starting user does not exist.")
 
     visited = set()
@@ -41,7 +44,7 @@ def dfs(graph, start):
         visited.add(current)
         order.append(current)
 
-        for friend in sorted(graph.adjacency_list[current], reverse=True):
+        for friend in sorted(graph.graph[current], reverse=True):
             if friend not in visited:
                 stack.append(friend)
 
@@ -49,11 +52,12 @@ def dfs(graph, start):
 
 
 def shortest_path(graph, start, destination):
-    """Return the shortest path as a list of usernames."""
-    if start not in graph.adjacency_list:
+    """Find the shortest path using BFS."""
+
+    if start not in graph.graph:
         raise ValueError("Starting user does not exist.")
 
-    if destination not in graph.adjacency_list:
+    if destination not in graph.graph:
         raise ValueError("Destination user does not exist.")
 
     queue = deque([start])
@@ -65,7 +69,7 @@ def shortest_path(graph, start, destination):
         if current == destination:
             break
 
-        for friend in sorted(graph.adjacency_list[current]):
+        for friend in sorted(graph.graph[current]):
             if friend not in parent:
                 parent[friend] = current
                 queue.append(friend)
@@ -84,7 +88,8 @@ def shortest_path(graph, start, destination):
 
 
 def degrees_of_separation(graph, user1, user2):
-    """Return the number of friendship links in the shortest path."""
+    """Calculate degrees of separation."""
+
     path = shortest_path(graph, user1, user2)
 
     if path is None:
