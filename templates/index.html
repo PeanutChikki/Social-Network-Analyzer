@@ -446,7 +446,7 @@
 
     </div>
 
-    <!-- HTML5 Canvas Animation Script -->
+    <!-- HTML5 Dynamic Canvas Animation Script -->
     <script>
         const canvas = document.getElementById('networkCanvas');
         const ctx = canvas.getContext('2d');
@@ -458,48 +458,63 @@
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
-        // Node & Connection Data
-        const nodes = [
-            { x: canvas.width * 0.2, y: canvas.height * 0.3, radius: 14, label: "Alice", color: "#38bdf8", vx: 0.2, vy: 0.3 },
-            { x: canvas.width * 0.6, y: canvas.height * 0.2, radius: 12, label: "Bob", color: "#818cf8", vx: -0.3, vy: 0.1 },
-            { x: canvas.width * 0.7, y: canvas.height * 0.7, radius: 16, label: "Charlie", color: "#c084fc", vx: 0.1, vy: -0.2 },
-            { x: canvas.width * 0.3, y: canvas.height * 0.8, radius: 12, label: "David", color: "#34d399", vx: -0.2, vy: -0.1 }
-        ];
+        const graphData = {{ graph | tojson }};
+        const userNames = Object.keys(graphData);
+        
+        const colors = ["#38bdf8", "#818cf8", "#c084fc", "#34d399", "#f43f5e", "#fbbf24"];
+        const nodes = userNames.map((name, index) => {
+            const angle = (index / userNames.length) * 2 * Math.PI;
+            const radiusDist = 100 + Math.random() * 40;
+            return {
+                label: name,
+                x: canvas.width / 2 + Math.cos(angle) * radiusDist,
+                y: canvas.height / 2 + Math.sin(angle) * radiusDist,
+                radius: 14,
+                color: colors[index % colors.length],
+                vx: (Math.random() - 0.5) * 0.4,
+                vy: (Math.random() - 0.5) * 0.4
+            };
+        });
 
-        const edges = [
-            [0, 1], [0, 2], [1, 2], [2, 3], [0, 3]
-        ];
+        const edges = [];
+        userNames.forEach((user, i) => {
+            const friends = graphData[user] || [];
+            friends.forEach(friend => {
+                const j = userNames.indexOf(friend);
+                if (j !== -1 && i < j) {
+                    edges.push([i, j]);
+                }
+            });
+        });
 
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Draw Links
             ctx.lineWidth = 1.5;
             edges.forEach(edge => {
                 const n1 = nodes[edge[0]];
                 const n2 = nodes[edge[1]];
-                ctx.beginPath();
-                ctx.strokeStyle = "rgba(56, 189, 248, 0.25)";
-                ctx.moveTo(n1.x, n1.y);
-                ctx.lineTo(n2.x, n2.y);
-                ctx.stroke();
+                if (n1 && n2) {
+                    ctx.beginPath();
+                    ctx.strokeStyle = "rgba(56, 189, 248, 0.3)";
+                    ctx.moveTo(n1.x, n1.y);
+                    ctx.lineTo(n2.x, n2.y);
+                    ctx.stroke();
+                }
             });
 
-            // Draw Nodes & Animate Motion
             nodes.forEach(node => {
                 node.x += node.vx;
                 node.y += node.vy;
 
-                if (node.x - node.radius < 0 || node.x + node.radius > canvas.width) node.vx *= -1;
-                if (node.y - node.radius < 0 || node.y + node.radius > canvas.height) node.vy *= -1;
+                if (node.x - node.radius < 20 || node.x + node.radius > canvas.width - 20) node.vx *= -1;
+                if (node.y - node.radius < 20 || node.y + node.radius > canvas.height - 20) node.vy *= -1;
 
-                // Node Outer Glow
                 ctx.beginPath();
                 ctx.arc(node.x, node.y, node.radius + 6, 0, Math.PI * 2);
                 ctx.fillStyle = node.color + "22";
                 ctx.fill();
 
-                // Core Node
                 ctx.beginPath();
                 ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
                 ctx.fillStyle = node.color;
@@ -508,7 +523,6 @@
                 ctx.fill();
                 ctx.shadowBlur = 0;
 
-                // Text Labels
                 ctx.fillStyle = "#ffffff";
                 ctx.font = "bold 11px Segoe UI";
                 ctx.textAlign = "center";
