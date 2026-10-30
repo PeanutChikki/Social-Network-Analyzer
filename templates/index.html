@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Network Analyzer - Sci-Fi Dashboard</title>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+        
+        body {
+            background-color: #080d19;
+            color: #d1d5db;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Top Bar Header */
+        .header-bar {
+            background: rgba(15, 23, 42, 0.95);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: #38bdf8;
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+            text-transform: uppercase;
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 8px;
+            background: rgba(30, 41, 59, 0.6);
+            padding: 4px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            padding: 6px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .nav-btn.active, .nav-btn:hover {
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            text-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
+        }
+
+        .top-icons {
+            display: flex;
+            gap: 12px;
+            color: #64748b;
+        }
+
+        .top-icon-btn {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #38bdf8;
+            width: 34px;
+            height: 34px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        /* Main App Grid Layout */
+        .app-container {
+            display: grid;
+            grid-template-columns: 320px 1fr 280px 240px;
+            gap: 16px;
+            padding: 16px;
+            flex: 1;
+            max-width: 1800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        @media (max-width: 1400px) {
+            .app-container {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        /* Sci-Fi Glass Panels */
+        .panel {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(56, 189, 248, 0.15);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .panel-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #f1f5f9;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 8px;
+        }
+
+        .sub-heading {
+            font-size: 12px;
+            font-weight: 600;
+            color: #38bdf8;
+            margin-bottom: 6px;
+        }
+
+        /* Left Canvas Box */
+        .graph-viewport {
+            position: relative;
+            height: 100%;
+            min-height: 480px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: radial-gradient(circle at center, #0f172a 0%, #050b14 100%);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+        }
+
+        #networkCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* Input Controls */
+        .form-group {
+            margin-bottom: 8px;
+        }
+
+        label {
+            display: block;
+            font-size: 11px;
+            color: #94a3b8;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px 12px;
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            border-radius: 6px;
+            color: #f8fafc;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 8px rgba(56, 189, 248, 0.3);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 9px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-blue {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+        }
+
+        .btn-green {
+            background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
+        }
+
+        .btn-gold {
+            background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+            color: #0f172a;
+            box-shadow: 0 4px 12px rgba(234, 179, 8, 0.3);
+        }
+
+        .btn:hover {
+            filter: brightness(1.2);
+            transform: translateY(-1px);
+        }
+
+        /* Stats Cards */
+        .quick-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .stat-card {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            padding: 8px 10px;
+        }
+
+        .stat-lbl { font-size: 10px; color: #64748b; font-weight: 700; text-transform: uppercase; }
+        .stat-val { font-size: 18px; font-weight: 800; color: #38bdf8; }
+
+        /* Influencers List */
+        .influencer-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 10px;
+            background: rgba(30, 41, 59, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+
+        .influencer-item .user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #38bdf8;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .badge-count {
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        /* SVG Bar Metrics Chart */
+        .chart-container {
+            height: 100px;
+            display: flex;
+            align-items: flex-end;
+            gap: 6px;
+            padding-top: 10px;
+        }
+
+        .chart-bar {
+            flex: 1;
+            background: linear-gradient(to top, #0284c7, #38bdf8);
+            border-radius: 3px 3px 0 0;
+            transition: height 0.3s;
+        }
+
+        .result-box {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(234, 179, 8, 0.3);
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #fef08a;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation Bar -->
+    <div class="header-bar">
+        <div class="header-title">
+            <i class="fa-solid fa-circle-nodes me-2"></i> Social Network Analyzer
+        </div>
+        <div class="header-nav">
+            <button class="nav-btn active">Overview</button>
+            <button class="nav-btn">Explore</button>
+            <button class="nav-btn">Algorithms</button>
+            <button class="nav-btn">Statistics</button>
+            <button class="nav-btn">Settings</button>
+        </div>
+        <div class="top-icons">
+            <button class="top-icon-btn"><i class="fa-solid fa-share-nodes"></i></button>
+            <button class="top-icon-btn"><i class="fa-solid fa-gear"></i></button>
+            <button class="top-icon-btn"><i class="fa-solid fa-right-from-bracket"></i></button>
+        </div>
+    </div>
+
+    <!-- Main Grid Dashboard -->
+    <div class="app-container">
+
+        <!-- Column 1: Interactive Network Canvas Graph Visualizer -->
+        <div class="panel graph-viewport">
+            <canvas id="networkCanvas"></canvas>
+        </div>
+
+        <!-- Column 2: Data Entry & Network Path Algorithms -->
+        <div class="panel">
+            <div class="panel-title">
+                <span>Network Data Entry & Overview</span>
+                <i class="fa-solid fa-sliders text-xs text-sky-400"></i>
+            </div>
+
+            <!-- Add User Form -->
+            <form action="/add_user" method="POST">
+                <div class="sub-heading">Add User Section</div>
+                <div class="form-group">
+                    <input type="text" name="username" placeholder="Enter Username (e.g., David)" required>
+                </div>
+                <button type="submit" class="btn btn-blue">Add User</button>
+            </form>
+
+            <div style="border-top: 1px solid rgba(255,255,255,0.05); margin: 6px 0;"></div>
+
+            <!-- Create Friendship Form -->
+            <form action="/add_friend" method="POST">
+                <div class="sub-heading">Create Friendship</div>
+                <div class="form-group">
+                    <input type="text" name="user1" placeholder="First User Name" style="margin-bottom: 6px;" required>
+                    <input type="text" name="user2" placeholder="Second User Name" required>
+                </div>
+                <button type="submit" class="btn btn-green">Create Friendship</button>
+            </form>
+
+            <div style="border-top: 1px solid rgba(255,255,255,0.05); margin: 6px 0;"></div>
+
+            <!-- Shortest Path Algorithms Form -->
+            <form action="/shortest_path" method="POST">
+                <div class="sub-heading">Network Algorithms & Path Analysis</div>
+                <div class="form-group">
+                    <input type="text" name="user1" placeholder="Start Node (Source)" style="margin-bottom: 6px;" required>
+                    <input type="text" name="user2" placeholder="End Node (Target)" required>
+                </div>
+                <button type="submit" class="btn btn-gold">Calculate Shortest Path</button>
+            </form>
+
+            {% if path_result %}
+                <div class="result-box">
+                    <i class="fa-solid fa-route me-1"></i> <strong>Result:</strong> {{ path_result }}
+                </div>
+            {% endif %}
+
+            <!-- Quick Summary Metrics -->
+            <div class="quick-stats">
+                <div class="stat-card">
+                    <div class="stat-lbl">Total Users</div>
+                    <div class="stat-val">{{ graph|length }}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-lbl">Friendships</div>
+                    <div class="stat-val">
+                        {% set ns = namespace(count=0) %}
+                        {% for u, friends in graph.items() %}
+                            {% set ns.count = ns.count + friends|length %}
+                        {% endfor %}
+                        {{ (ns.count / 2)|int }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Column 3: Key Influencers (Most Connected Users) -->
+        <div class="panel">
+            <div class="panel-title">
+                <span>Key Influencers</span>
+                <span class="text-xs text-slate-400">Most-Connected</span>
+            </div>
+
+            {% for user, friends in graph.items() %}
+            <div class="influencer-item">
+                <div class="user-info">
+                    <div class="avatar">{{ user[0]|upper }}</div>
+                    <span style="font-weight: 600;">{{ user }}</span>
+                </div>
+                <span class="badge-count">{{ friends|length }} Friends</span>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Column 4: Network Metrics & Charts -->
+        <div class="panel">
+            <div class="panel-title">
+                <span>Network Metrics</span>
+                <i class="fa-solid fa-chart-simple text-xs text-sky-400"></i>
+            </div>
+
+            <div class="sub-heading">Degree Distribution</div>
+            <div class="chart-container">
+                <div class="chart-bar" style="height: 40%;"></div>
+                <div class="chart-bar" style="height: 80%;"></div>
+                <div class="chart-bar" style="height: 55%;"></div>
+                <div class="chart-bar" style="height: 95%;"></div>
+                <div class="chart-bar" style="height: 30%;"></div>
+            </div>
+
+            <div style="border-top: 1px solid rgba(255,255,255,0.05); margin: 8px 0;"></div>
+
+            <div class="sub-heading">Network Density</div>
+            <div style="font-size: 22px; font-weight: 800; color: #38bdf8;">0.68 <span style="font-size: 11px; color: #10b981;">+12%</span></div>
+
+            <button class="btn btn-blue" style="margin-top: auto;">
+                <i class="fa-solid fa-circle-question me-1"></i> Help & Docs
+            </button>
+        </div>
+
+    </div>
+
+    <!-- HTML5 Canvas Animation Script -->
+    <script>
+        const canvas = document.getElementById('networkCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Node & Connection Data
+        const nodes = [
+            { x: canvas.width * 0.2, y: canvas.height * 0.3, radius: 14, label: "Alice", color: "#38bdf8", vx: 0.2, vy: 0.3 },
+            { x: canvas.width * 0.6, y: canvas.height * 0.2, radius: 12, label: "Bob", color: "#818cf8", vx: -0.3, vy: 0.1 },
+            { x: canvas.width * 0.7, y: canvas.height * 0.7, radius: 16, label: "Charlie", color: "#c084fc", vx: 0.1, vy: -0.2 },
+            { x: canvas.width * 0.3, y: canvas.height * 0.8, radius: 12, label: "David", color: "#34d399", vx: -0.2, vy: -0.1 }
+        ];
+
+        const edges = [
+            [0, 1], [0, 2], [1, 2], [2, 3], [0, 3]
+        ];
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw Links
+            ctx.lineWidth = 1.5;
+            edges.forEach(edge => {
+                const n1 = nodes[edge[0]];
+                const n2 = nodes[edge[1]];
+                ctx.beginPath();
+                ctx.strokeStyle = "rgba(56, 189, 248, 0.25)";
+                ctx.moveTo(n1.x, n1.y);
+                ctx.lineTo(n2.x, n2.y);
+                ctx.stroke();
+            });
+
+            // Draw Nodes & Animate Motion
+            nodes.forEach(node => {
+                node.x += node.vx;
+                node.y += node.vy;
+
+                if (node.x - node.radius < 0 || node.x + node.radius > canvas.width) node.vx *= -1;
+                if (node.y - node.radius < 0 || node.y + node.radius > canvas.height) node.vy *= -1;
+
+                // Node Outer Glow
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, node.radius + 6, 0, Math.PI * 2);
+                ctx.fillStyle = node.color + "22";
+                ctx.fill();
+
+                // Core Node
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+                ctx.fillStyle = node.color;
+                ctx.shadowColor = node.color;
+                ctx.shadowBlur = 12;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+
+                // Text Labels
+                ctx.fillStyle = "#ffffff";
+                ctx.font = "bold 11px Segoe UI";
+                ctx.textAlign = "center";
+                ctx.fillText(node.label, node.x, node.y + node.radius + 14);
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+</body>
+</html>
