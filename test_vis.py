@@ -1,30 +1,60 @@
-
 from pathlib import Path
+
 from graph import SocialNetwork
 from jsonLoader import load_json
 from visualization import create_visualization
 
-# Load the dataset
-network = SocialNetwork()
 
-base_path = Path(__file__).resolve().parent
-json_path = base_path / "data" / "network.json"
+# ----------------------------------------
+# PATHS
+# ----------------------------------------
 
-load_json(network, json_path)
+BASE_DIR = Path(__file__).resolve().parent
 
-# Visualize a small sample instead of all 4039 users
-sample_graph = {}
+DATA_FILE = BASE_DIR / "data" / "network.json"
 
-for user in list(network.graph)[:20]:
-    sample_graph[user] = {
-        friend for friend in network.graph[user]
-        if friend in network.graph and friend in list(network.graph)[:20]
-    }
+OUTPUT_FILE = BASE_DIR / "static" / "test_visualization.html"
 
-# Generate visualization
-create_visualization(
-    sample_graph,
-    output_path="static/social_network.html"
-)
 
-print("Visualization created successfully!")
+# ----------------------------------------
+# LOAD DATASET
+# ----------------------------------------
+
+def main():
+
+    print("Loading Facebook dataset...")
+
+    if not DATA_FILE.exists():
+        print("ERROR: Dataset file not found!")
+        print(f"Expected location: {DATA_FILE}")
+        return
+
+    network = SocialNetwork()
+
+    load_json(network, DATA_FILE)
+
+    print("Dataset loaded successfully!")
+
+    print(f"Total users: {network.get_user_count()}")
+    print(f"Total friendships: {network.get_friendship_count()}")
+
+
+    # ----------------------------------------
+    # GENERATE VISUALIZATION
+    # ----------------------------------------
+
+    print("\nGenerating visualization...")
+
+    create_visualization(
+        network,
+        output_path=str(OUTPUT_FILE)
+    )
+
+    print("\nVisualization generated successfully!")
+    print(f"File location: {OUTPUT_FILE}")
+
+    print("\nOpen test_visualization.html in your browser.")
+
+
+if __name__ == "__main__":
+    main()
