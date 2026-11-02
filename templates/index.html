@@ -339,6 +339,16 @@
     <!-- Main Grid Dashboard -->
     <div class="app-container">
 
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div style="grid-column: 1 / -1;">
+            {% for category, message in messages %}
+            <div class="result-box" role="status">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
         <!-- Column 1: Interactive Network Canvas Graph Visualizer -->
         <div class="panel graph-viewport">
             <canvas id="networkCanvas"></canvas>
@@ -394,7 +404,7 @@
             <div class="quick-stats">
                 <div class="stat-card">
                     <div class="stat-lbl">Total Users</div>
-                    <div class="stat-val">{{ graph|length }}</div>
+                    <div class="stat-val">{{ user_count }}</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-lbl">Friendships</div>
@@ -416,13 +426,13 @@
                 <span class="text-xs text-slate-400">Most-Connected</span>
             </div>
 
-            {% for user, friends in graph.items() %}
+            {% for user in influencers %}
             <div class="influencer-item">
                 <div class="user-info">
                     <div class="avatar">{{ user[0]|upper }}</div>
                     <span style="font-weight: 600;">{{ user }}</span>
                 </div>
-                <span class="badge-count">{{ friends|length }} Friends</span>
+                <span class="badge-count">{{ graph[user]|length }} Friends</span>
             </div>
             {% endfor %}
         </div>
@@ -446,7 +456,8 @@
             <div style="border-top: 1px solid rgba(255,255,255,0.05); margin: 8px 0;"></div>
 
             <div class="sub-heading">Network Density</div>
-            <div style="font-size: 22px; font-weight: 800; color: #38bdf8;">0.68 <span style="font-size: 11px; color: #10b981;">+12%</span></div>
+            <div style="font-size: 22px; font-weight: 800; color: #38bdf8;">{{ "%.3f"|format(density) }}</div>
+            <div style="font-size: 10px; color: #94a3b8;">Actual network density (0 to 1)</div>
 
             <button class="btn btn-blue" style="margin-top: auto;">
                 <i class="fa-solid fa-circle-question me-1"></i> Help & Docs
@@ -494,8 +505,17 @@
                     edges.push([i, j]);
                 }
             });
-        });
-
+        });// Get the shortest path calculated by Flask
+        const highlightedPath = {{ highlighted_path | tojson }};
+        const pathEdges = new Set();
+        for (let i = 0; i < highlightedPath.length - 1; i++) {
+            const edgeKey = [
+                highlightedPath[i],
+                highlightedPath[i + 1]
+            ].sort().join("::");
+            pathEdges.add(edgeKey);
+        }
+        
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -505,7 +525,11 @@
                 const n2 = nodes[edge[1]];
                 if (n1 && n2) {
                     ctx.beginPath();
-                    ctx.strokeStyle = "rgba(56, 189, 248, 0.3)";
+                    const edgeKey = [n1.label, n2.label].sort().join("::");
+                    ctx.strokeStyle = pathEdges.has(edgeKey)
+                        ? "#22c55e"
+                        : "rgba(56, 189, 248, 0.3)";
+                    ctx.lineWidth = pathEdges.has(edgeKey) ? 4 : 1.5;
                     ctx.moveTo(n1.x, n1.y);
                     ctx.lineTo(n2.x, n2.y);
                     ctx.stroke();
