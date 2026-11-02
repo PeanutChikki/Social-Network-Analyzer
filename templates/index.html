@@ -97,21 +97,35 @@
 
         /* Main App Grid Layout */
         .app-container {
-            display: grid;
-            grid-template-columns: 50% 16.67% 16.67% 16.66%;
-            gap: 8px;
-            padding: 16px;
-            flex: 1;
-            max-width: 1800px;
-            margin: 0 auto;
-            width: 100%;
-        }
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    padding: 16px;
+    flex: 1;
+    max-width: 1800px;
+    margin: 0 auto;
+    width: 100%;
+}
 
-        @media (max-width: 1400px) {
-            .app-container {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
+/* Graph takes the complete first row */
+.graph-viewport {
+    grid-column: 1 / -1;
+    width: 100%;
+    height: 720px;
+}
+
+/* Responsive layout */
+@media (max-width: 900px) {
+    .app-container {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .app-container {
+        grid-template-columns: 1fr;
+    }
+}
 
         /* Sci-Fi Glass Panels */
         .panel {
