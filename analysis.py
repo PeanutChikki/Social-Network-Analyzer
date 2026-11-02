@@ -1,7 +1,7 @@
 
 # analysis.py
 
-
+import networkx as nx
 # 1. Find mutual friends
 def mutual_friends(network, user1, user2):
     graph = network.graph
@@ -116,5 +116,39 @@ def connected_components(network):
                     stack.append(friend)
 
         components.append(component)
+        # 6. Detect communities using Louvain Algorithm
+def detect_communities(network):
+
+    graph = network.graph
+
+    # Convert our social network into a NetworkX graph
+    G = nx.Graph(graph)
+
+    # Check if graph is empty
+    if G.number_of_nodes() == 0:
+        return []
+
+    # If there are no friendships, every user is a separate community
+    if G.number_of_edges() == 0:
+        return [[user] for user in sorted(G.nodes())]
+
+    # Apply Louvain Community Detection
+    communities = nx.community.louvain_communities(
+        G,
+        weight=None,
+        resolution=1,
+        seed=42
+    )
+
+    # Convert sets into sorted lists
+    result = []
+
+    for community in communities:
+        result.append(sorted(community))
+
+    # Sort communities by size (largest first)
+    result.sort(key=lambda community: (-len(community), community[0]))
+
+    return result
 
     return components
