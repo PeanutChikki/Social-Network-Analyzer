@@ -1,2 +1,7 @@
 Python3
 Flask
+
+app.py ka khaandaan:
+- _pycache_
+- templates
+
