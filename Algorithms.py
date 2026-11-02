@@ -96,3 +96,17 @@ def degrees_of_separation(graph, user1, user2):
         return None
 
     return len(path) - 1
+
+def degree_centrality(network, username):
+    username = network._validate_username(username)
+
+    if username is None or username not in network.graph:
+        return None
+    total_users = network.get_user_count()
+    if total_users <= 1:
+        return 0.0
+
+    degree = len(network.graph[username])
+    centrality = degree / (total_users - 1)
+
+    return centrality
