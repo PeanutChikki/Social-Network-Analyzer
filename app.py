@@ -1,18 +1,20 @@
 from flask import Flask, flash, redirect, render_template, request, url_for
 
+import visualization
+
 from Algorithms import shortest_path
 from analysis import (
     most_connected_users,
     network_statistics,
 )
 from graph import SocialNetwork
-from data import load_original_network
 
 app = Flask(__name__)
 app.secret_key = "social-network-analyzer-local-dev-key"
 
 # One in-memory network shared by all routes while the Flask server is running.
-social_net = load_original_network()
+social_net = SocialNetwork()
+
 
 def page_context(path_result=None, highlighted_path=None):
     """Prepare plain data for the Jinja template."""
@@ -45,6 +47,24 @@ def page_context(path_result=None, highlighted_path=None):
 @app.route("/")
 def home():
     return render_template("index.html", **page_context())
+
+
+@app.route("/run_visualization", methods=["POST"])
+def run_visualization():
+    """Generate the interactive PyVis network and show it on the dashboard."""
+    try:
+        visualization.create_visualization(
+            social_net,
+            output_path=f"{app.static_folder}/social_network.html",
+        )
+        return render_template(
+            "index.html",
+            **page_context(),
+            visualization_ready=True,
+        )
+    except Exception as error:
+        flash(f"Could not create visualization: {error}", "error")
+        return render_template("index.html", **page_context())
 
 
 @app.route("/add_user", methods=["POST"])
