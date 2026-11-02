@@ -1,27 +1,38 @@
-
 class SocialNetwork:
     def __init__(self):
         # Each user maps to a set of their friends
         self.graph = {}
 
-    def add_user(self, username):
+    # Validate and standardize usernames
+    def _validate_username(self, username):
+        if not isinstance(username, str):
+            return None
+
         username = username.strip()
 
         if not username:
-            print("Username cannot be empty.")
+            return None
+
+        return username
+
+    # Add a new user
+    def add_user(self, username):
+        username = self._validate_username(username)
+
+        if username is None:
             return False
 
         if username in self.graph:
-            print(f"{username} already exists.")
             return False
 
         self.graph[username] = set()
-        print(f"User {username} added successfully.")
         return True
 
+    # Remove an existing user
     def remove_user(self, username):
-        if username not in self.graph:
-            print(f"{username} does not exist.")
+        username = self._validate_username(username)
+
+        if username is None or username not in self.graph:
             return False
 
         # Remove this user from all their friends
@@ -29,98 +40,145 @@ class SocialNetwork:
             self.graph[friend].discard(username)
 
         del self.graph[username]
-        print(f"User {username} removed successfully.")
         return True
 
+    # Add a friendship between two users
     def add_friendship(self, user1, user2):
+        user1 = self._validate_username(user1)
+        user2 = self._validate_username(user2)
+
+        if user1 is None or user2 is None:
+            return False
+
         if user1 not in self.graph or user2 not in self.graph:
-            print("Both users must exist first.")
             return False
 
         if user1 == user2:
-            print("A user cannot be friends with themselves.")
             return False
 
         if user2 in self.graph[user1]:
-            print("These users are already friends.")
             return False
 
-        # Friendships go in both directions
+        # Friendships are undirected
         self.graph[user1].add(user2)
         self.graph[user2].add(user1)
 
-        print(f"{user1} and {user2} are now friends.")
         return True
 
+    # Add multiple friends to a user
     def add_multiple_friends(self, username, friends):
-        if username not in self.graph:
-            print(f"{username} does not exist.")
-            return
+        username = self._validate_username(username)
+
+        if username is None or username not in self.graph:
+            return False
+
+        if not isinstance(friends, (list, tuple, set)):
+            return False
+
+        success = True
 
         for friend in friends:
+            friend = self._validate_username(friend)
+
+            if friend is None:
+                success = False
+                continue
+
             if friend not in self.graph:
                 self.add_user(friend)
 
-            self.add_friendship(username, friend)
+            if not self.add_friendship(username, friend):
+                success = False
 
+        return success
+
+    # Remove a friendship between two users
     def remove_friendship(self, user1, user2):
+        user1 = self._validate_username(user1)
+        user2 = self._validate_username(user2)
+
+        if user1 is None or user2 is None:
+            return False
+
         if user1 not in self.graph or user2 not in self.graph:
-            print("Both users must exist.")
             return False
 
         if user2 not in self.graph[user1]:
-            print("These users are not friends.")
             return False
 
         self.graph[user1].remove(user2)
         self.graph[user2].remove(user1)
 
-        print(f"Friendship between {user1} and {user2} removed.")
         return True
 
+    # Get all friends of a user
     def get_friends(self, username):
-        if username not in self.graph:
-            print(f"{username} does not exist.")
+        username = self._validate_username(username)
+
+        if username is None or username not in self.graph:
             return []
 
         return sorted(self.graph[username])
 
+    # Get all users
     def get_all_users(self):
         return sorted(self.graph.keys())
 
+    # Display the entire graph (useful for debugging)
     def display_graph(self):
         if not self.graph:
             print("The social network is empty.")
             return
 
         print("\n--- Social Network ---")
+
         for username in sorted(self.graph):
             friends = sorted(self.graph[username])
-            print(f"{username}: {', '.join(friends) if friends else 'No friends'}")
+            print(
+                f"{username}: "
+                f"{', '.join(friends) if friends else 'No friends'}"
+            )
 
+    # Get total number of users
     def get_user_count(self):
         return len(self.graph)
 
+    # Get total number of friendships
     def get_friendship_count(self):
         # Each friendship is stored twice, so divide by two
-        return sum(len(friends) for friends in self.graph.values()) // 2
-    
+        return sum(
+            len(friends) for friends in self.graph.values()
+        ) // 2
 
 
-# Run this example only when graph.py is executed directly
+# Run example only when graph.py is executed directly
 if __name__ == "__main__":
     network = SocialNetwork()
 
-    network.add_user("David")
-    network.add_multiple_friends(
-        "David",
-        ["Alice", "Bob", "Charlie"]
-    )   
+    print("Adding users:")
+    print(network.add_user("David"))
+    print(network.add_user("Alice"))
+    print(network.add_user("Bob"))
+    print(network.add_user("Charlie"))
 
-    network.add_friendship("Alice", "Bob")
+    print("\nAdding friendships:")
+    print(network.add_friendship("David", "Alice"))
+    print(network.add_friendship("David", "Bob"))
+    print(network.add_friendship("Alice", "Bob"))
 
+    print("\nTesting validation:")
+    print(network.add_user(" David "))  # Duplicate
+    print(network.add_user(""))         # Empty username
+    print(network.add_user(None))       # Invalid input
+
+    print("\nDisplaying network:")
     network.display_graph()
 
     print("\nDavid's friends:", network.get_friends("David"))
     print("Total users:", network.get_user_count())
     print("Total friendships:", network.get_friendship_count())
+
+    print("\nRemoving Alice:")
+    print(network.remove_user("Alice"))
+
+    network.display_graph()
