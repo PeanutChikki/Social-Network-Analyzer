@@ -1,18 +1,19 @@
 from flask import Flask, flash, redirect, render_template, request, url_for
 
+
 from Algorithms import shortest_path
 from analysis import (
     most_connected_users,
     network_statistics,
 )
 from graph import SocialNetwork
+from data import load_original_network
 
 app = Flask(__name__)
 app.secret_key = "social-network-analyzer-local-dev-key"
 
 # One in-memory network shared by all routes while the Flask server is running.
-social_net = SocialNetwork()
-
+social_net = load_original_network()
 
 def page_context(path_result=None, highlighted_path=None):
     """Prepare plain data for the Jinja template."""
