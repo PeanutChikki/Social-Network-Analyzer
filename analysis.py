@@ -116,7 +116,9 @@ def connected_components(network):
                     stack.append(friend)
 
         components.append(component)
-        # 6. Detect communities using Louvain Algorithm
+    return components
+
+# 6. Detect communities using Louvain Algorithm
 def detect_communities(network):
 
     graph = network.graph
@@ -150,5 +152,3 @@ def detect_communities(network):
     result.sort(key=lambda community: (-len(community), community[0]))
 
     return result
-
-    return components
