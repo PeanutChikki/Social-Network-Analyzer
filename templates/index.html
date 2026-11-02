@@ -481,7 +481,7 @@
                 label: name,
                 x: canvas.width / 2 + Math.cos(angle) * radiusDist,
                 y: canvas.height / 2 + Math.sin(angle) * radiusDist,
-                radius: 14,
+                radius: 6,
                 color: colors[index % colors.length],
                 vx: (Math.random() - 0.5) * 0.4,
                 vy: (Math.random() - 0.5) * 0.4
@@ -536,7 +536,7 @@
                 if (node.y - node.radius < 20 || node.y + node.radius > canvas.height - 20) node.vy *= -1;
 
                 ctx.beginPath();
-                ctx.arc(node.x, node.y, node.radius + 6, 0, Math.PI * 2);
+                ctx.arc(node.x, node.y, node.radius + 3, 0, Math.PI * 2);
                 ctx.fillStyle = node.color + "22";
                 ctx.fill();
 
