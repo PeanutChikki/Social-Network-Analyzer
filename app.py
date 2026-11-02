@@ -1,6 +1,6 @@
 from flask import Flask, flash, redirect, render_template, request, url_for
 
-
+from visualization import create_visualization
 from Algorithms import shortest_path
 from analysis import (
     most_connected_users,
@@ -14,6 +14,11 @@ app.secret_key = "social-network-analyzer-local-dev-key"
 
 # One in-memory network shared by all routes while the Flask server is running.
 social_net = load_original_network()
+
+create_visualization(
+    social_net,
+    output_path="static/social_network.html"
+)
 
 def page_context(path_result=None, highlighted_path=None):
     """Prepare plain data for the Jinja template."""
