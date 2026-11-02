@@ -212,22 +212,23 @@ def create_visualization(
             "multiselect": True
         },
         "physics": {
-            "enabled": True,
-            "solver": "forceAtlas2Based",
-            "forceAtlas2Based": {
-                "gravitationalConstant": -55,
-                "centralGravity": 0.012,
-                "springLength": 125,
-                "springConstant": 0.08,
-                "damping": 0.42,
-                "avoidOverlap": 0.8
-            },
-            "minVelocity": 0.75,
-            "stabilization": {
-                "enabled": True,
-                "iterations": 180
-            }
-        }
+    "enabled": True,
+    "solver": "forceAtlas2Based",
+    "forceAtlas2Based": {
+        "gravitationalConstant": -150,
+        "centralGravity": 0.005,
+        "springLength": 250,
+        "springConstant": 0.025,
+        "damping": 0.5,
+        "avoidOverlap": 1.5
+    },
+    "minVelocity": 0.5,
+    "stabilization": {
+        "enabled": True,
+        "iterations": 1000,
+        "updateInterval": 50
+    }
+}
     }
     net.set_options(json.dumps(options))
 
@@ -284,7 +285,8 @@ def create_visualization(
             position: fixed !important;
             top: 82px !important;
             left: 0 !important;
-            width: calc(100% - 350px) !important;
+            width: width: 100%;
+            z-index: 1; !important;
             height: calc(100vh - 82px) !important;
             margin: 0 !important;
             padding: 0 !important;
@@ -314,6 +316,7 @@ def create_visualization(
             padding: 15px;
             background: #0c172b;
             border-left: 1px solid #263957;
+            z-index: 10;
         }
 
         .sn-card {
@@ -323,6 +326,7 @@ def create_visualization(
             padding: 14px;
             margin-bottom: 12px;
             box-shadow: 0 8px 25px rgba(0,0,0,.15);
+            z-index: 10;
         }
 
         .sn-card h3 {
