@@ -1,9 +1,7 @@
 class SocialNetwork:
     def __init__(self):
-        # Each user maps to a set of their friends
         self.graph = {}
 
-    # Validate and standardize usernames
     def _validate_username(self, username):
         if not isinstance(username, str):
             return None
@@ -15,7 +13,6 @@ class SocialNetwork:
 
         return username
 
-    # Add a new user
     def add_user(self, username):
         username = self._validate_username(username)
 
@@ -28,21 +25,18 @@ class SocialNetwork:
         self.graph[username] = set()
         return True
 
-    # Remove an existing user
     def remove_user(self, username):
         username = self._validate_username(username)
 
         if username is None or username not in self.graph:
             return False
 
-        # Remove this user from all their friends
         for friend in self.graph[username]:
             self.graph[friend].discard(username)
 
         del self.graph[username]
         return True
 
-    # Add a friendship between two users
     def add_friendship(self, user1, user2):
         user1 = self._validate_username(user1)
         user2 = self._validate_username(user2)
@@ -59,13 +53,11 @@ class SocialNetwork:
         if user2 in self.graph[user1]:
             return False
 
-        # Friendships are undirected
         self.graph[user1].add(user2)
         self.graph[user2].add(user1)
 
         return True
 
-    # Add multiple friends to a user
     def add_multiple_friends(self, username, friends):
         username = self._validate_username(username)
 
@@ -92,7 +84,6 @@ class SocialNetwork:
 
         return success
 
-    # Remove a friendship between two users
     def remove_friendship(self, user1, user2):
         user1 = self._validate_username(user1)
         user2 = self._validate_username(user2)
@@ -111,7 +102,6 @@ class SocialNetwork:
 
         return True
 
-    # Get all friends of a user
     def get_friends(self, username):
         username = self._validate_username(username)
 
@@ -120,11 +110,9 @@ class SocialNetwork:
 
         return sorted(self.graph[username])
 
-    # Get all users
     def get_all_users(self):
         return sorted(self.graph.keys())
 
-    # Display the entire graph (useful for debugging)
     def display_graph(self):
         if not self.graph:
             print("The social network is empty.")
@@ -139,11 +127,9 @@ class SocialNetwork:
                 f"{', '.join(friends) if friends else 'No friends'}"
             )
 
-    # Get total number of users
     def get_user_count(self):
         return len(self.graph)
 
-    # Get total number of friendships
     def get_friendship_count(self):
         # Each friendship is stored twice, so divide by two
         return sum(
@@ -151,7 +137,6 @@ class SocialNetwork:
         ) // 2
 
 
-# Run example only when graph.py is executed directly
 if __name__ == "__main__":
     network = SocialNetwork()
 

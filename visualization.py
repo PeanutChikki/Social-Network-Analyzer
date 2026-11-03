@@ -212,23 +212,17 @@ def create_visualization(
             "multiselect": True
         },
         "physics": {
-    "enabled": True,
-    "solver": "forceAtlas2Based",
-    "forceAtlas2Based": {
-        "gravitationalConstant": -150,
-        "centralGravity": 0.005,
-        "springLength": 250,
-        "springConstant": 0.025,
-        "damping": 0.5,
-        "avoidOverlap": 1.5
-    },
-    "minVelocity": 0.5,
-    "stabilization": {
-        "enabled": True,
-        "iterations": 1000,
-        "updateInterval": 50
-    }
-}
+            "enabled": False,  # Changed from True to prevent tab freezing on 80k edges
+            "solver": "forceAtlas2Based",
+            "forceAtlas2Based": {
+                "gravitationalConstant": -150,
+                "centralGravity": 0.005,
+                "springLength": 250,
+                "springConstant": 0.025,
+                "damping": 0.5,
+                "avoidOverlap": 1.5
+            }
+        }
     }
     net.set_options(json.dumps(options))
 
@@ -285,8 +279,8 @@ def create_visualization(
             position: fixed !important;
             top: 82px !important;
             left: 0 !important;
-            width: width: 100%;
-            z-index: 1; !important;
+            width: 100% !important;
+            z-index: 1 !important;
             height: calc(100vh - 82px) !important;
             margin: 0 !important;
             padding: 0 !important;
