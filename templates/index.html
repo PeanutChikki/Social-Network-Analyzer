@@ -527,6 +527,15 @@
         resizeCanvas();
 
         const graphData = {{ graph | tojson }};
+        const highlightedPath = {{ highlighted_path | tojson }};
+        const pathEdges = new Set();
+        for (let i = 0; i < highlightedPath.length - 1; i++) {
+            const edgeKey = [
+                highlightedPath[i],
+                highlightedPath[i + 1]
+            ].sort().join("::");
+            pathEdges.add(edgeKey);
+        }
         const userNames = Object.keys(graphData);
         
         const colors = ["#38bdf8", "#818cf8", "#c084fc", "#34d399", "#f43f5e", "#fbbf24"];
