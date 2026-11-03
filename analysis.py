@@ -1,8 +1,5 @@
-
-# analysis.py
-
 import networkx as nx
-# 1. Find mutual friends
+
 def mutual_friends(network, user1, user2):
     graph = network.graph
 
@@ -11,8 +8,6 @@ def mutual_friends(network, user1, user2):
 
     return graph[user1] & graph[user2]
 
-
-# 2. Recommend new friends
 def recommend_friends(network, username):
     graph = network.graph
 
@@ -25,21 +20,17 @@ def recommend_friends(network, username):
     for friend in existing_friends:
         for candidate in graph[friend]:
 
-            # Do not recommend the user or their existing friends
             if candidate == username or candidate in existing_friends:
                 continue
 
             common = graph[username] & graph[candidate]
             recommendations[candidate] = len(common)
 
-    # Sort by mutual friends (highest first), then alphabetically
     return sorted(
         recommendations.items(),
         key=lambda item: (-item[1], item[0])
     )
 
-
-# 3. Find the most-connected users
 def most_connected_users(network):
     graph = network.graph
 
@@ -55,7 +46,6 @@ def most_connected_users(network):
     )
 
 
-# 4. Calculate network statistics
 def network_statistics(network):
     graph = network.graph
 
@@ -91,8 +81,6 @@ def network_statistics(network):
         )
     }
 
-
-# 5. Find connected components
 def connected_components(network):
     graph = network.graph
     visited = set()
@@ -118,23 +106,16 @@ def connected_components(network):
         components.append(component)
     return components
 
-# 6. Detect communities using Louvain Algorithm
 def detect_communities(network):
-
     graph = network.graph
-
-    # Convert our social network into a NetworkX graph
     G = nx.Graph(graph)
 
-    # Check if graph is empty
     if G.number_of_nodes() == 0:
         return []
 
-    # If there are no friendships, every user is a separate community
     if G.number_of_edges() == 0:
         return [[user] for user in sorted(G.nodes())]
 
-    # Apply Louvain Community Detection
     communities = nx.community.louvain_communities(
         G,
         weight=None,
@@ -142,13 +123,9 @@ def detect_communities(network):
         seed=42
     )
 
-    # Convert sets into sorted lists
     result = []
-
     for community in communities:
         result.append(sorted(community))
 
-    # Sort communities by size (largest first)
     result.sort(key=lambda community: (-len(community), community[0]))
-
     return result

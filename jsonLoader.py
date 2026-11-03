@@ -1,13 +1,6 @@
-
 import json
 
-
 def load_json(network, file_path):
-    """
-    Load a JSON adjacency list into an existing SocialNetwork object.
-    Converts friend lists into sets.
-    """
-
     with open(file_path, "r", encoding="utf-8") as file:
         data = json.load(file)
 

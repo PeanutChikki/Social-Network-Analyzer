@@ -1,11 +1,6 @@
-
-
 from collections import deque
 
-
 def bfs(graph, start):
-    """Breadth-First Search"""
-
     if start not in graph.graph:
         raise ValueError("Starting user does not exist.")
 
@@ -24,17 +19,13 @@ def bfs(graph, start):
 
     return order
 
-
 def dfs(graph, start):
-    """Depth-First Search"""
-
     if start not in graph.graph:
         raise ValueError("Starting user does not exist.")
 
     visited = set()
     order = []
     stack = [start]
-
     while stack:
         current = stack.pop()
 
@@ -50,10 +41,7 @@ def dfs(graph, start):
 
     return order
 
-
 def shortest_path(graph, start, destination):
-    """Find the shortest path using BFS."""
-
     if start not in graph.graph:
         raise ValueError("Starting user does not exist.")
 
@@ -86,12 +74,8 @@ def shortest_path(graph, start, destination):
 
     return path[::-1]
 
-
 def degrees_of_separation(graph, user1, user2):
-    """Calculate degrees of separation."""
-
     path = shortest_path(graph, user1, user2)
-
     if path is None:
         return None
 
