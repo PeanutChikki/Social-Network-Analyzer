@@ -489,12 +489,16 @@
 
             <div class="sub-heading">Degree Distribution</div>
             <div class="chart-container">
-                <div class="chart-bar" style="height: 40%;"></div>
-                <div class="chart-bar" style="height: 80%;"></div>
-                <div class="chart-bar" style="height: 55%;"></div>
-                <div class="chart-bar" style="height: 95%;"></div>
-                <div class="chart-bar" style="height: 30%;"></div>
+                {% for item in degree_distribution %}
+                <div class="chart-bar"
+                style="height: {{ item.height }}%;"
+                title="Degree: {{ item.degree }}, Users: {{ item.count }}">
             </div>
+            </div>
+            {% else %}
+            <p>No users available</p>
+            {% endfor %}
+        </div>
 
             <div style="border-top: 1px solid rgba(255,255,255,0.05); margin: 8px 0;"></div>
 
@@ -605,6 +609,5 @@
     </script>
 </body>
 </html>
-
 
 
