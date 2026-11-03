@@ -6,7 +6,7 @@ A lightweight, local graph analysis tool and interactive web dashboard built wit
 
 ## Features 
 
-- **Custom Graph Data Structure:** Built from scratch using Python dictionaries and sets to efficiently map users and undirected friendships ($O(1)$ average-time lookups).
+- **Custom Graph Data Structure:** Built from scratch using Python dictionaries and sets to efficiently map users and undirected friendships 
 - **Algorithmic Pathfinding:** Implements **Breadth-First Search (BFS)** to calculate accurate, unweighted shortest paths and degrees of separation between any two users.
 - **Influencer Detection:** Automatically analyzes degree distribution across the network to isolate the most connected users.
 - **Local Flask Dashboard:** An interactive web interface allowing users to dynamically modify networks, test paths, and view live statistics.
