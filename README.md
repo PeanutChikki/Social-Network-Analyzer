@@ -1,10 +1,10 @@
-# Social Network Analyzer 🌐
+# Social Network Analyzer 
 
 A lightweight, local graph analysis tool and interactive web dashboard built with Python, Flask, and PyVis. This project models social networks using a custom adjacency list, executes graph traversal algorithms, and provides tools for visualizing connections, finding shortest paths, and managing network data.
 
 ---
 
-## Features 🚀
+## Features 
 
 - **Custom Graph Data Structure:** Built from scratch using Python dictionaries and sets to efficiently map users and undirected friendships ($O(1)$ average-time lookups).
 - **Algorithmic Pathfinding:** Implements **Breadth-First Search (BFS)** to calculate accurate, unweighted shortest paths and degrees of separation between any two users.
@@ -15,7 +15,7 @@ A lightweight, local graph analysis tool and interactive web dashboard built wit
 
 ---
 
-## Project Architecture 🗂️
+## Project Architecture 
 
 ```text
        [ test_visualization.html ] 
@@ -49,7 +49,7 @@ A lightweight, local graph analysis tool and interactive web dashboard built wit
 
 ---
 
-## Prerequisites & Installation 🛠️
+## Prerequisites & Installation 
 
 Ensure you have **Python 3.8+** installed on your machine. 
 
@@ -66,7 +66,7 @@ Ensure you have **Python 3.8+** installed on your machine.
 
 ---
 
-## Running the Application 🖥️
+## Running the Application 
 
 1. **Start the Flask development server:**
    ```bash
@@ -81,7 +81,7 @@ Ensure you have **Python 3.8+** installed on your machine.
 
 ---
 
-## Team Members 👥
+## Team Members 
 
 - **Lokesh** (U25MC001)
 - **Aryanandha** (U25MC003)
