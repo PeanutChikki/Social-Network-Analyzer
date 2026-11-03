@@ -70,7 +70,7 @@ Ensure you have **Python 3.8+** installed on your machine.
 
 1. **Start the Flask development server:**
    ```bash
-   python app_3.py
+   python app.py
    ```
 
 2. **Open the local dashboard:**
