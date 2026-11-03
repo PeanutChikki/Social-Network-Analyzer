@@ -1,7 +1,5 @@
-
 import json
 from pathlib import Path
-
 
 def convert_to_json(input_file, output_file):
     graph = {}
@@ -18,15 +16,12 @@ def convert_to_json(input_file, output_file):
             if user1 == user2:
                 continue
 
-            # Create users if they don't exist
             graph.setdefault(user1, set())
-            graph.setdefault(user2, set())
+            graph.setdefault(user2, set()) # Creates users if they don't exist
 
-            # Add undirected friendship
             graph[user1].add(user2)
             graph[user2].add(user1)
 
-    # Convert sets into sorted lists for JSON
     json_graph = {
         user: sorted(friends)
         for user, friends in graph.items()

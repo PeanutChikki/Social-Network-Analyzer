@@ -1,7 +1,4 @@
-
-
 from collections import deque
-
 
 def bfs(graph, start):
     if start not in graph.graph:
@@ -21,7 +18,6 @@ def bfs(graph, start):
                 queue.append(friend)
 
     return order
-
 
 def dfs(graph, start):
     if start not in graph.graph:
@@ -44,7 +40,6 @@ def dfs(graph, start):
                 stack.append(friend)
 
     return order
-
 
 def shortest_path(graph, start, destination):
     if start not in graph.graph:
@@ -78,7 +73,6 @@ def shortest_path(graph, start, destination):
         current = parent[current]
 
     return path[::-1]
-
 
 def degrees_of_separation(graph, user1, user2):
     path = shortest_path(graph, user1, user2)

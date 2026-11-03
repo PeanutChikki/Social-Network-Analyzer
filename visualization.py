@@ -2,7 +2,6 @@ from pyvis.network import Network
 from pathlib import Path
 import json
 
-# Reuse your teammates' Python implementations.
 from Algorithms import bfs, dfs, shortest_path, degrees_of_separation
 from analysis import (
     mutual_friends,
@@ -14,8 +13,6 @@ from analysis import (
 
 
 class _NetworkAdapter:
-    """Allows analysis.py functions to work when a plain dictionary is supplied."""
-
     def __init__(self, graph):
         self.graph = graph
 
@@ -28,23 +25,9 @@ def create_visualization(
     shortest_path=None,
     output_path="static/social_network.html"
 ):
-    """
-    Create an interactive Social Network Analyzer dashboard.
-
-    `graph` can be either:
-      - a SocialNetwork object from graph.py, or
-      - its adjacency dictionary.
-
-    The dashboard includes BFS, DFS, shortest path, degrees of separation,
-    mutual friends, friend recommendations, most-connected users,
-    connected components, network statistics, and sorting controls.
-    """
-
-    # Accept either a SocialNetwork object or its dictionary.
     network_object = graph if hasattr(graph, "graph") else _NetworkAdapter(graph)
     graph_data = network_object.graph
 
-    # Make a clean JSON-compatible adjacency list.
     adjacency = {
         str(user): sorted(str(friend) for friend in friends)
         for user, friends in graph_data.items()
@@ -93,7 +76,7 @@ def create_visualization(
         for user, count in initial_analysis["recommendations"]
     ]
 
-    # Create the interactive PyVis graph.
+    # Creates the interactive PyVis graph.
     net = Network(
         height="calc(100vh - 100px)",
         width="100%",
@@ -104,7 +87,6 @@ def create_visualization(
         cdn_resources="in_line"
     )
 
-    # Optional path supplied by the caller.
     path_nodes = set(shortest_path) if shortest_path else set()
     path_edges = set()
 
@@ -117,7 +99,7 @@ def create_visualization(
                 ))
             )
 
-    # Add nodes with actual usernames / dataset IDs as labels.
+    # Adding nodes with actual usernames / dataset IDs as labels.
     for username, friends in adjacency.items():
         degree = len(friends)
 
@@ -230,7 +212,6 @@ def create_visualization(
     net.write_html(str(output_file))
     html = output_file.read_text(encoding="utf-8")
 
-    # Safely embed the graph data in JavaScript.
     graph_json = json.dumps(adjacency).replace("</", "<\\/")
     analysis_json = json.dumps(initial_analysis).replace("</", "<\\/")
 
@@ -882,6 +863,5 @@ def create_visualization(
 
     html = html.replace("<body>", "<body>" + dashboard_html)
     html = html.replace("</body>", script + "</body>")
-
     output_file.write_text(html, encoding="utf-8")
     return str(output_file)

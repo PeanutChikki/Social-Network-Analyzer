@@ -1,7 +1,5 @@
 from flask import Flask, flash, redirect, render_template, request, url_for
-
 import visualization
-
 from Algorithms import shortest_path
 from analysis import (
     most_connected_users,
@@ -11,13 +9,9 @@ from graph import SocialNetwork
 
 app = Flask(__name__)
 app.secret_key = "social-network-analyzer-local-dev-key"
-
-# One in-memory network shared by all routes while the Flask server is running.
 social_net = SocialNetwork()
 
-
 def page_context(path_result=None, highlighted_path=None):
-    """Prepare plain data for the Jinja template."""
     graph_data = {
         username: sorted(friends)
         for username, friends in social_net.graph.items()
@@ -62,10 +56,8 @@ def page_context(path_result=None, highlighted_path=None):
 def home():
     return render_template("index.html", **page_context())
 
-
 @app.route("/run_visualization", methods=["POST"])
 def run_visualization():
-    """Generate the interactive PyVis network and show it on the dashboard."""
     try:
         visualization.create_visualization(
             social_net,

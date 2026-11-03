@@ -1,12 +1,4 @@
-
 def load_dataset(network, file_path, max_edges=1000):
-    """
-    Load friendships from an edge-list file into an existing
-    SocialNetwork object.
-
-    max_edges=1000 loads a small sample.
-    max_edges=None loads every edge.
-    """
     loaded_edges = 0
 
     with open(file_path, "r", encoding="utf-8") as file:
@@ -15,14 +7,10 @@ def load_dataset(network, file_path, max_edges=1000):
                 break
 
             parts = line.split()
-
-            # Skip empty lines or malformed rows
             if len(parts) != 2:
                 continue
 
             user1, user2 = parts
-
-            # Add both users and their friendship.
             # setdefault avoids duplicate users and edges.
             network.graph.setdefault(user1, set())
             network.graph.setdefault(user2, set())
