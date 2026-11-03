@@ -31,12 +31,26 @@ def page_context(path_result=None, highlighted_path=None):
         if possible_edges
         else 0
     )
+    degree_counts = {}
+    for friends in social_net.graph.values():
+        degree = len(friends)
+        degree_counts[degree] = degree_counts.get(degree, 0) + 1
+    max_count = max(degree_counts.values(), default=1)
+    degree_distribution = []
+    for degree, count in sorted(degree_counts.items()):
+        height = (count / max_count) * 100
+        degree_distribution.append({
+        "degree": degree,
+        "count": count,
+        "height": height
+    })
 
     return {
         "graph": graph_data,
         "user_count": social_net.get_user_count(),
         "friendship_count": social_net.get_friendship_count(),
         "stats": stats,
+        "degree_distribution": degree_distribution,
         "density": density,
         "influencers": max_users,
         "path_result": path_result,
